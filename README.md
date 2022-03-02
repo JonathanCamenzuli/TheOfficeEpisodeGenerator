@@ -47,3 +47,6 @@ def loadEpList():
 
 <img src="/gitImages/loadingDisplaying.gif" alt="Program Functioning">
 
+# Disclaimer
+
+I am not affiliated with either NBC, The Office, IMDb or any other motion picture or television corporation, parent or affiliate corporation. All motion pictures, products and brands mentioned and featured in this program and repository are the respective trademarks and copyrights of their owners.
