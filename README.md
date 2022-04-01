@@ -1,6 +1,6 @@
 <img src="/gitImages/TheOfficeEpisodeGeneratorLogo.png" alt="The Office Episode Generator Logo">
 
-A Python-based program that generates a random episode from The Office (U.S).
+A Python-based program that generates and opens a random episode from The Office (U.S).
 
 # Requirements and Dependencies
 
@@ -10,7 +10,7 @@ This program makes use of the following packages:
 - [Python Imaging Library](https://github.com/python-pillow/Pillow)
 - [Pyfiglet](https://github.com/pwaller/pyfiglet)
 
-```pip install cinemagoer
+```
 python3 -m pip install cinemagoer
 ```
 
@@ -21,6 +21,8 @@ python3 -m pip install Pillow
 ```
 python3 -m pip install pyfiglet
 ```
+# Changelog - 01/04/2022
+- Added functionality that opens the selected episode in the default chosen video player.
 
 # Methodology
 
@@ -46,6 +48,13 @@ def loadEpList():
 ```
 
 <img src="/gitImages/loadingDisplaying.gif" alt="Program Functioning">
+
+The random episode is then opened by the preferred video player.
+
+```python
+path_to_open = par_path + "\\" + s_str + "\\" + s_str + ep_str + ".mp4"
+os.startfile(path_to_open)
+```
 
 # Disclaimer
 
