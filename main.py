@@ -138,7 +138,7 @@ class episodeList():
         
         return sStr, epStr
 
-class pathClass():
+class fileDir():
     def gotoParentDir(self):
         # Changing directory to parent directory
         currPath = os.path.dirname(os.getcwd())
@@ -161,7 +161,7 @@ if __name__ == "__main__":
 
     asciiArt = asciiArt()
     episodeList = episodeList()
-    pathClass = pathClass()
+    fileDir = fileDir()
 
     while (True):
 
@@ -188,9 +188,9 @@ if __name__ == "__main__":
         sStr = selEp[:3]
         epStr = selEp[3:6]
 
-        parPath = pathClass.gotoParentDir()
+        parPath = fileDir.gotoParentDir()
         sStr, epStr = episodeList.modifyEpString(sStr, epStr)
-        pathClass.openEpisode()
+        fileDir.openEpisode()
 
         print("-> Enter any key to restart\n-> Enter 'Q' to Quit\n")
         inputStr = input("Enter an input: ")
@@ -199,4 +199,4 @@ if __name__ == "__main__":
         else:
             pass
 
-        pathClass.revertDir()
+        fileDir.revertDir()
