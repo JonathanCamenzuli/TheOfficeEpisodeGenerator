@@ -8,7 +8,6 @@ import pathlib
 
 # Dependencies
 from PIL import Image
-import asciiArt
 import imdb
 import pyfiglet
 
@@ -62,27 +61,39 @@ class asciiArt():
             sys.stdout.flush()
             time.sleep(.1)
 
-# Function that loads episode list
-def loadEpList():
-    imdb_instance = imdb.IMDb()
-    imdb_code = "0386676"
+class episodeList():
 
-    series = imdb_instance.get_movie(imdb_code)
-    imdb_instance.update(series, 'episodes')
-    episodes = series.data['episodes']
-    with open("episode_list.txt", "w") as f:
-        for i in episodes.keys():
-            for j in episodes[i]:
-                title = episodes[i][j]['title']
-                if j < 10:
-                    ep_num = "E0" + str(j)
-                else:
-                    ep_num = "E" + str(j)
-                f.write("S0" + str(i) + ep_num + " : " + title + "\n")
+    # Function that loads episode list
+    def loadEpList():
+        imdb_instance = imdb.IMDb()
+        imdb_code = "0386676"
+
+        series = imdb_instance.get_movie(imdb_code)
+        imdb_instance.update(series, 'episodes')
+        episodes = series.data['episodes']
+        with open("episode_list.txt", "w") as f:
+            for i in episodes.keys():
+                for j in episodes[i]:
+                    title = episodes[i][j]['title']
+                    if j < 10:
+                        ep_num = "E0" + str(j)
+                    else:
+                        ep_num = "E" + str(j)
+                    f.write("S0" + str(i) + ep_num + " : " + title + "\n")
+
+    def createEpList(self, done):
+        loadingProcess = threading.Thread(target = asciiArt.loadingRod)
+        loadingProcess.start()
+        self.loadEpList()
+        time.sleep(10)
+        done = True
+        print("\n\nEpisodes list successfully created!\n\n")
+        
 
 if __name__ == "__main__":
 
     asciiArt = asciiArt()
+    episodeList = episodeList()
 
     while (True):
 
@@ -99,12 +110,7 @@ if __name__ == "__main__":
         else:
             # Creating Episode List
             done = False
-            loadingProcess = threading.Thread(target = asciiArt.loadingRod)
-            loadingProcess.start()
-            loadEpList()
-            time.sleep(10)
-            done = True
-            print("\n\nEpisodes list successfully created!\n\n")
+            episodeList.createEpList(done)
 
         # Open episode list and obtain episode name
         # from randomised line
