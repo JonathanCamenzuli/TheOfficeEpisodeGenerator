@@ -156,7 +156,6 @@ class fileDir():
         # Revert path to old directory
         os.chdir(parPath + "\\TheOfficeEpisodeGenerator\\")
 
-
 if __name__ == "__main__":
 
     asciiArt = asciiArt()

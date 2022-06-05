@@ -29,22 +29,22 @@ python3 -m pip install pyfiglet
 An instance from the Cinemagoer class is created. The `movieID` for *The Office (U.S)* is then used to load all the episodes of the series from IMDb. All the episodes are placed into a text file. Furthermore, after that text file is created, that text file will be used to display a random line which in this case displays the episode in said line.
 
 ```python
-def loadEpList():
-    imdb_instance = imdb.IMDb()
-    imdb_code = "0386676"
+def getEpList(self):
+    imdbInstance = imdb.IMDb()
+    imdbCode = "0386676"
 
-    series = imdb_instance.get_movie(imdb_code)
-    imdb_instance.update(series, 'episodes')
+    series = imdbInstance.get_movie(imdbCode)
+    imdbInstance.update(series, 'episodes')
     episodes = series.data['episodes']
     with open("episode_list.txt", "w") as f:
         for i in episodes.keys():
             for j in episodes[i]:
                 title = episodes[i][j]['title']
                 if j < 10:
-                    ep_num = "E0" + str(j)
+                    epNum = "E0" + str(j)
                 else:
-                    ep_num = "E" + str(j)
-                f.write("S0" + str(i) + ep_num + " : " + title + "\n")
+                    epNum = "E" + str(j)
+                f.write("S0" + str(i) + epNum + " : " + title + "\n")
 ```
 
 <img src="/gitImages/loadingDisplaying.gif" alt="Program Functioning">
@@ -52,8 +52,9 @@ def loadEpList():
 The random episode is then opened by the preferred video player.
 
 ```python
-path_to_open = par_path + "\\" + s_str + "\\" + s_str + ep_str + ".mp4"
-os.startfile(path_to_open)
+def openEpisode(self):
+    pathToOpen = parPath + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
+    os.startfile(pathToOpen)
 ```
 
 # Disclaimer
