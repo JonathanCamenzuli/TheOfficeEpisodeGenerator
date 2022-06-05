@@ -18,7 +18,7 @@ class asciiArt():
         self.getTitle()
 
     # Convert "images/logo.png" into ASCII art
-    def getIntroLogo():
+    def getIntroLogo(self):
         # Pass the image as command line argument
         image_path = "images/logo.png"
         img = Image.open(image_path)
@@ -47,13 +47,13 @@ class asciiArt():
         print(ascii_image)
 
     # Print "Episode Generator" string
-    def getTitle():
+    def getTitle(self):
         bottom_text = pyfiglet.figlet_format("Episode Generator", font = "bubble" )
         print(bottom_text)
 
     # Function that plays loading animation while
     # loading episode list
-    def loadingRod():
+    def loadingRod(self):
         for load in itertools.cycle([".  ",".. ","..."," ..", "  .", "   "]):
             if done:
                 break
@@ -64,7 +64,7 @@ class asciiArt():
 class episodeList():
 
     # Function that loads episode list
-    def loadEpList():
+    def getEpList(self):
         imdb_instance = imdb.IMDb()
         imdb_code = "0386676"
 
@@ -84,34 +84,12 @@ class episodeList():
     def createEpList(self, done):
         loadingProcess = threading.Thread(target = asciiArt.loadingRod)
         loadingProcess.start()
-        self.loadEpList()
+        self.getEpList()
         time.sleep(10)
         done = True
         print("\n\nEpisodes list successfully created!\n\n")
-        
 
-if __name__ == "__main__":
-
-    asciiArt = asciiArt()
-    episodeList = episodeList()
-
-    while (True):
-
-        # Clear CLI
-        os.system('clear')
-
-        # Print ASCII art
-        asciiArt.getASCII()
-
-        # Check if file exists
-        file_path = pathlib.Path("episode_list.txt")
-        if file_path.is_file():
-            pass
-        else:
-            # Creating Episode List
-            done = False
-            episodeList.createEpList(done)
-
+    def loadEpList(self):
         # Open episode list and obtain episode name
         # from randomised line
         file = open("episode_list.txt")
@@ -119,16 +97,10 @@ if __name__ == "__main__":
         rand_episode = random.randint(0, 187)
         sel_ep = episodes[rand_episode]
         print(episodes[rand_episode])
+        return sel_ep
 
-        # Parse string and episode number from line
-        s_str = sel_ep[:3]
-        ep_str = sel_ep[3:6]
-
-        # Changing directory to parent directory
-        curr_path = os.path.dirname(os.getcwd())
-        os.chdir(curr_path)
-        par_path = os.getcwd()
-
+    def modifyEpString(self, s_str, ep_str):
+        
         # Change episode string if there is two-part
         # episode available
         if ((s_str == "S03") and (ep_str == "E12" or ep_str == "E13")):
@@ -163,6 +135,46 @@ if __name__ == "__main__":
                 ep_str = "E11E12"
             elif (ep_str == "E25" or ep_str == "E26"):
                 ep_str = "E25E26"
+        
+        return s_str, ep_str
+        
+
+if __name__ == "__main__":
+
+    asciiArt = asciiArt()
+    episodeList = episodeList()
+
+    while (True):
+
+        # Clear CLI
+        os.system('clear')
+
+        # Print ASCII art
+        asciiArt.getASCII()
+
+        # Check if file exists
+        file_path = pathlib.Path("episode_list.txt")
+        if file_path.is_file():
+            pass
+        else:
+            # Creating Episode List
+            done = False
+            episodeList.createEpList(done)
+
+        # Open episode list and obtain episode name
+        # from randomised line
+        sel_ep = episodeList.loadEpList()
+
+        # Parse string and episode number from line
+        s_str = sel_ep[:3]
+        ep_str = sel_ep[3:6]
+
+        # Changing directory to parent directory
+        curr_path = os.path.dirname(os.getcwd())
+        os.chdir(curr_path)
+        par_path = os.getcwd()
+
+        s_str, ep_str = episodeList.modifyEpString(s_str, ep_str)
 
         # Open video in specified path
         path_to_open = par_path + "\\" + s_str + "\\" + s_str + ep_str + ".mp4"
