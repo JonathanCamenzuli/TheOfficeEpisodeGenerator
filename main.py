@@ -32,14 +32,21 @@ import imdb
 import pyfiglet
 
 class asciiArt():
-# Get overall ASCII art
+    """Class concerned with dealing with the ASCII art related to the
+       operation of the script itself.
+    """
+
     def getASCII(self):
+        """Prints all the ASCII art
+        """
         self.getIntroLogo()
         self.getTitle()
 
-    # Convert "images/logo.png" into ASCII art
     def getIntroLogo(self):
-        # Pass the image as command line argument
+        """Converts the image found in `images/logo.png` into ASCII
+           text to print on the CLI
+        """
+
         imagePath = "images/logo.png"
         img = Image.open(imagePath)
 
@@ -66,14 +73,16 @@ class asciiArt():
         asciiImage = "\n".join(asciiImage)
         print(asciiImage)
 
-    # Print "Episode Generator" string
     def getTitle(self):
+        """Print the `Episode Generator` string.
+        """
         bottomText = pyfiglet.figlet_format("Episode Generator", font = "bubble" )
         print(bottomText)
 
-    # Function that plays loading animation while
-    # loading episode list
     def loadingRod(self):
+        """Prints the loading animation. Usef while obtaining the
+           episode list from IMDB
+        """
         for load in itertools.cycle([".  ",".. ","..."," ..", "  .", "   "]):
             if done:
                 break
@@ -82,9 +91,15 @@ class asciiArt():
             time.sleep(.1)
 
 class episodeList():
+    """Class concerned with anything that has to do with the
+       episode list which is found `./episode_list.txt`, if
+       available.
+    """
 
-    # Function that loads episode list
     def getEpList(self):
+        """Obtains the episode list from IMDB into a text file
+           named `episode_list.txt`
+        """
         imdbInstance = imdb.IMDb()
         imdbCode = "0386676"
 
@@ -102,6 +117,9 @@ class episodeList():
                     f.write("S0" + str(i) + epNum + " : " + title + "\n")
 
     def createEpList(self, done):
+        """Method that indicates that the episode list is getting
+           generated in the CLI
+        """
         loadingProcess = threading.Thread(target = asciiArt.loadingRod)
         loadingProcess.start()
         self.getEpList()
@@ -110,8 +128,13 @@ class episodeList():
         print("\n\nEpisodes list successfully created!\n\n")
 
     def loadEpList(self):
-        # Open episode list and obtain episode name
-        # from randomised line
+        """Opens `episode_list.txt` and selects a random line
+           from the text file
+
+        Returns:
+            String: `selEp` is the string contains the
+            episode selected
+        """
         file = open("episode_list.txt")
         episodes = file.readlines()
         randEpisode = random.randint(0, 187)
@@ -120,9 +143,18 @@ class episodeList():
         return selEp
 
     def modifyEpString(self, sStr, epStr):
-        
-        # Change episode string if there is two-part
-        # episode available
+        """Checks if there is an extended/two-part episode for
+           the selected episode
+
+        Args:
+            sStr (String): is the string which corresponds to a
+            particular season
+            epStr (String): is the string which corresponds to a
+            particular episode
+
+        Returns:
+            Strings: Modified `sStr` and `epStr` (if applicable)
+        """
         if ((sStr == "S03") and (epStr == "E12" or epStr == "E13")):
             epStr = "E12E13"
         elif (sStr == "S04"):
@@ -159,8 +191,15 @@ class episodeList():
         return sStr, epStr
 
 class fileDir():
+    """Class which contains functions related to file operations
+    """
     def gotoParentDir(self):
-        # Changing directory to parent directory
+        """Changes cwd to parent directory
+
+        Returns:
+            String: The new cwd, in this case,
+            the parent dir of original directory
+        """
         currPath = os.path.dirname(os.getcwd())
         os.chdir(currPath)
         parPath = os.getcwd()
@@ -168,12 +207,15 @@ class fileDir():
         return parPath
 
     def openEpisode(self):
-        # Open video in specified path
+        """Opens the episode in the specified path,
+           with the help of `sStr` and `epStr`
+        """
         pathToOpen = parPath + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
         os.startfile(pathToOpen)
 
     def revertDir(self):
-        # Revert path to old directory
+        """Revert cwd to original dir of script
+        """
         os.chdir(parPath + "\\TheOfficeEpisodeGenerator\\")
 
 if __name__ == "__main__":
@@ -186,8 +228,6 @@ if __name__ == "__main__":
 
         # Clear CLI
         os.system('clear')
-
-        # Print ASCII art
         asciiArt.getASCII()
 
         # Check if file exists
@@ -195,12 +235,9 @@ if __name__ == "__main__":
         if filePath.is_file():
             pass
         else:
-            # Creating Episode List
             done = False
             episodeList.createEpList(done)
 
-        # Open episode list and obtain episode name
-        # from randomised line
         selEp = episodeList.loadEpList()
 
         # Parse string and episode number from line
