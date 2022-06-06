@@ -21,8 +21,10 @@ python3 -m pip install Pillow
 ```
 python3 -m pip install pyfiglet
 ```
-# Changelog - 01/04/2022
-- Added functionality that opens the selected episode in the default chosen video player.
+# Changelog - 07/06/2022
+- Encapsulated functionality of program into one script, with classes to encapsulate functionality
+- Added Python Docstring comments
+- This project now falls under the conditions of the GNU General Public License v2.0. For more information, please look at the license file found in `./LICENSE`
 
 # Methodology
 
@@ -57,6 +59,6 @@ def openEpisode(self):
     os.startfile(pathToOpen)
 ```
 
-# Disclaimer
-
-I am not affiliated with either NBC, The Office, IMDb or any other motion picture or television corporation, parent or affiliate corporation. All motion pictures, products and brands mentioned and featured in this program and repository are the respective trademarks and copyrights of their owners.
+# Disclaimers
+- This project falls under the conditions of the GNU General Public License v2.0. For more information, please look at the license file found in `./LICENSE`
+- I am not affiliated with either NBC, The Office, IMDb or any other motion picture or television corporation, parent or affiliate corporation. All motion pictures, products and brands mentioned and featured in this program and repository are the respective trademarks and copyrights of their owners.
