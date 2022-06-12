@@ -4,27 +4,19 @@ A Python-based program that generates and opens a random episode from The Office
 
 # Requirements and Dependencies
 
-This program makes use of the following packages:
+This program makes use of the following package:
 
 - [Cinemagoer](https://github.com/cinemagoer/cinemagoer) (formerly known as *IMDbPY*)
-- [Python Imaging Library](https://github.com/python-pillow/Pillow)
-- [Pyfiglet](https://github.com/pwaller/pyfiglet)
+
 
 ```
 python3 -m pip install cinemagoer
 ```
 
-```
-python3 -m pip install Pillow
-```
 
-```
-python3 -m pip install pyfiglet
-```
-# Changelog - 07/06/2022
-- Encapsulated functionality of program into one script, with classes to encapsulate functionality
-- Added Python Docstring comments
-- This project now falls under the conditions of the GNU General Public License v2.0. For more information, please look at the license file found in `./LICENSE`
+# Changelog - 13/06/2022
+- Added functionality that prompts user whether episodes are present locally.
+- Removed dependency on the `Pillow` and `pyfiglet` packages
 
 # Methodology
 
@@ -60,5 +52,5 @@ def openEpisode(self):
 ```
 
 # Disclaimers
-- This project falls under the conditions of the GNU General Public License v2.0. For more information, please look at the license file found in `./LICENSE`
+- This project is distributed under terms of the GNU General Public License v2.0. For more information, please look at the license file found in `./LICENSE`
 - I am not affiliated with either NBC, The Office, IMDb or any other motion picture or television corporation, parent or affiliate corporation. All motion pictures, products and brands mentioned and featured in this program and repository are the respective trademarks and copyrights of their owners.
