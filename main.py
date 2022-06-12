@@ -27,9 +27,7 @@ import itertools
 import pathlib
 
 # Dependencies
-from PIL import Image
 import imdb
-import pyfiglet
 
 asciiTitlePath = "./images/ascii_title.txt"
 
@@ -41,48 +39,9 @@ class asciiArt():
     def getASCII(self):
         """Prints all the ASCII art
         """
-        #self.getIntroLogo()
-        #self.getTitle()
         with open(asciiTitlePath) as f:
             asciiTitleContents = f.read()
             print(asciiTitleContents + "\n")
-
-    def getIntroLogo(self):
-        """Converts the image found in `images/logo.png` into ASCII
-           text to print on the CLI
-        """
-
-        imagePath = "images/logo.png"
-        img = Image.open(imagePath)
-
-        # Resize the image
-        width, height = img.size
-        aspect_ratio = height / width
-        newWidth = 110 # orig: 120
-        newHeight = aspect_ratio * newWidth * 0.55
-        img = img.resize((newWidth, int(newHeight)))
-
-        # Convert image to greyscale format
-        img = img.convert('L')
-
-        pixels = img.getdata()
-
-        # Replace each pixel with a character from array
-        chars = ["@", "O", "#", "$", "%", "&", "*", "!", "~", "·", " "]
-        newPixels = [chars[pixel//25] for pixel in pixels]
-        newPixels = ''.join(newPixels)
-
-        # Split string of chars into multiple strings of length equal to new width and create a list
-        newPixelsCount = len(newPixels)
-        asciiImage = [newPixels[index:index + newWidth] for index in range(0, newPixelsCount, newWidth)]
-        asciiImage = "\n".join(asciiImage)
-        print(asciiImage)
-
-    def getTitle(self):
-        """Print the `Episode Generator` string.
-        """
-        bottomText = pyfiglet.figlet_format("Episode Generator", font = "bubble" )
-        print(bottomText)
 
     def loadingRod(self):
         """Prints the loading animation. Usef while obtaining the
