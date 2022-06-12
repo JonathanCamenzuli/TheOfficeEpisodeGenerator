@@ -224,6 +224,13 @@ if __name__ == "__main__":
     episodeList = episodeList()
     fileDir = fileDir()
 
+    vidsPresentStr = input("Are episodes present in your file system? (Y/N): ")
+
+    if vidsPresentStr == "Y" or vidsPresentStr == "y":
+        vidsPresent = True
+    else:
+        vidsPresent = False
+
     while (True):
 
         # Clear CLI
@@ -240,13 +247,14 @@ if __name__ == "__main__":
 
         selEp = episodeList.loadEpList()
 
-        # Parse string and episode number from line
-        sStr = selEp[:3]
-        epStr = selEp[3:6]
-
-        parPath = fileDir.gotoParentDir()
-        sStr, epStr = episodeList.modifyEpString(sStr, epStr)
-        fileDir.openEpisode()
+        if vidsPresent == True:
+            # Parse string and episode number from line
+            sStr = selEp[:3]
+            epStr = selEp[3:6]
+        
+            parPath = fileDir.gotoParentDir()
+            sStr, epStr = episodeList.modifyEpString(sStr, epStr)
+            fileDir.openEpisode()
 
         print("-> Enter any key to restart\n-> Enter 'Q' to Quit\n")
         inputStr = input("Enter an input: ")
@@ -255,4 +263,5 @@ if __name__ == "__main__":
         else:
             pass
 
-        fileDir.revertDir()
+        if vidsPresent == True:
+            fileDir.revertDir()
