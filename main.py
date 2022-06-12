@@ -31,6 +31,8 @@ from PIL import Image
 import imdb
 import pyfiglet
 
+asciiTitlePath = "./images/ascii_title.txt"
+
 class asciiArt():
     """Class concerned with dealing with the ASCII art related to the
        operation of the script itself.
@@ -39,8 +41,11 @@ class asciiArt():
     def getASCII(self):
         """Prints all the ASCII art
         """
-        self.getIntroLogo()
-        self.getTitle()
+        #self.getIntroLogo()
+        #self.getTitle()
+        with open(asciiTitlePath) as f:
+            asciiTitleContents = f.read()
+            print(asciiTitleContents + "\n")
 
     def getIntroLogo(self):
         """Converts the image found in `images/logo.png` into ASCII
