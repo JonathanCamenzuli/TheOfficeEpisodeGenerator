@@ -202,8 +202,8 @@ if __name__ == "__main__":
         asciiArt.getASCII()
 
         # Check if file exists
-        filePath = pathlib.Path("episode_list.txt")
-        if filePath.is_file():
+        filePath = pathlib.PurePath("episode_list.txt")
+        if pathlib.Path(filePath).is_file():
             pass
         else:
             done = False
