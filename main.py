@@ -198,7 +198,7 @@ if __name__ == "__main__":
     while (True):
 
         # Clear CLI
-        os.system('clear')
+        os.system('cls' if os.name == 'nt' else 'clear')
         asciiArt.getASCII()
 
         # Check if file exists
