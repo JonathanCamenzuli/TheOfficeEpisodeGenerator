@@ -31,6 +31,7 @@ import imdb
 
 asciiTitlePath = "./images/ascii_title.txt"
 
+
 class asciiArt():
     """Class concerned with dealing with the ASCII art related to the
        operation of the script itself.
@@ -47,12 +48,14 @@ class asciiArt():
         """Prints the loading animation. Usef while obtaining the
            episode list from IMDB
         """
-        for load in itertools.cycle([".  ",".. ","..."," ..", "  .", "   "]):
+        for load in itertools.cycle([".  ", ".. ", "...", " ..", "  .", "   "]):
             if done:
                 break
-            sys.stdout.write("\r Episodes list not found - Obtaining Episodes List from IMDb  " + load)
+            sys.stdout.write(
+                "\r Episodes list not found - Obtaining Episodes List from IMDb  " + load)
             sys.stdout.flush()
             time.sleep(.1)
+
 
 class episodeList():
     """Class concerned with anything that has to do with the
@@ -84,7 +87,7 @@ class episodeList():
         """Method that indicates that the episode list is getting
            generated in the CLI
         """
-        loadingProcess = threading.Thread(target = asciiArt.loadingRod)
+        loadingProcess = threading.Thread(target=asciiArt.loadingRod)
         loadingProcess.start()
         self.getEpList()
         time.sleep(10)
@@ -119,44 +122,23 @@ class episodeList():
         Returns:
             Strings: Modified `sStr` and `epStr` (if applicable)
         """
-        if ((sStr == "S03") and (epStr == "E12" or epStr == "E13")):
-            epStr = "E12E13"
-        elif (sStr == "S04"):
-            if (epStr == "E01" or epStr == "E02"):
-                epStr = "E01E02"
-            elif (epStr == "E03" or epStr == "E04"):
-                epStr = "E03E04"
-            elif (epStr == "E05" or epStr == "E06"):
-                epStr = "E05E06"
-            elif (epStr == "E07" or epStr == "E08"):
-                epStr = "E07E08"
-            elif (epStr == "E18" or epStr == "E19"):
-                epStr = "E18E19"
-        elif (sStr == "S06"):
-            if (epStr == "E04" or epStr == "E05"):
-                epStr = "E04E05"
-            elif (epStr == "E13"):
-
+        if (sStr == "S06"):
+            if (epStr == "E13"):
                 # Prompt the user if extended version
                 # of episode should be played
-                inputStr = input("Do you want to open an extended version of S06E13? (Y/N): ")
+                inputStr = input(
+                    "Do you want to open an extended version of S06E13? (Y/N): ")
                 if inputStr == 'Y' or inputStr == 'y':
                     epStr = epStr + " - EXTENDED"
                 else:
                     pass
-            elif (epStr == "E17" or epStr == "E18"):
-                epStr = "E17E18"        
-        elif (sStr == "S07"):
-            if (epStr == "E11" or epStr == "E12"):
-                epStr = "E11E12"
-            elif (epStr == "E25" or epStr == "E26"):
-                epStr = "E25E26"
-        
         return sStr, epStr
+
 
 class fileDir():
     """Class which contains functions related to file operations
     """
+
     def gotoParentDir(self):
         """Changes cwd to parent directory
 
@@ -181,6 +163,7 @@ class fileDir():
         """Revert cwd to original dir of script
         """
         os.chdir(parPath + "\\TheOfficeEpisodeGenerator\\")
+
 
 if __name__ == "__main__":
 
@@ -215,7 +198,7 @@ if __name__ == "__main__":
             # Parse string and episode number from line
             sStr = selEp[:3]
             epStr = selEp[3:6]
-        
+
             parPath = fileDir.gotoParentDir()
             sStr, epStr = episodeList.modifyEpString(sStr, epStr)
             fileDir.openEpisode()
