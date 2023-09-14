@@ -31,7 +31,7 @@ import sqlite3
 import imdb
 from dotenv import load_dotenv
 
-asciiTitlePath = "./images/ascii_title.txt"
+asciiTitlePath = "./assets/ascii_title.txt"
 
 
 class asciiArt():
@@ -143,7 +143,7 @@ class fileDir():
 
     def __init__(self):
         load_dotenv()
-        self.dir_path = os.getenv("THE_OFFICE_ROOT_PATH")
+        self.dirPath = os.getenv("THE_OFFICE_ROOT_PATH")
 
     def gotoParentDir(self):
         """Changes cwd to parent directory
@@ -162,7 +162,7 @@ class fileDir():
         """Opens the episode in the specified path,
            with the help of `sStr` and `epStr`
         """
-        pathToOpen = self.dir_path + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
+        pathToOpen = self.dirPath + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
         os.startfile(pathToOpen)
 
     def revertDir(self):
@@ -205,7 +205,6 @@ if __name__ == "__main__":
             sStr = selEp[:3]
             epStr = selEp[3:6]
 
-            # parPath = fileDir.gotoParentDir()
             sStr, epStr = episodeList.modifyEpString(sStr, epStr)
             fileDir.openEpisode()
 
@@ -215,6 +214,3 @@ if __name__ == "__main__":
             quit()
         else:
             pass
-
-        # if vidsPresent == True:
-        #     fileDir.revertDir()

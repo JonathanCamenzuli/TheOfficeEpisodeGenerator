@@ -13,10 +13,12 @@ This program makes use of the following package:
 python3 -m pip install cinemagoer
 ```
 
+# Environmental Variables
 
-# Changelog - 13/06/2022
-- Added functionality that prompts user whether episodes are present locally.
-- Removed dependency on the `Pillow` and `pyfiglet` packages
+- `THE_OFFICE_ROOT_PATH`: The absolute path for the root directory which includes the episodes. In Windows, this is included as `"C:\\...\\EpisodesFolder"`. In *nix, this is included as `"/home/.../EpisodesFolder"`.
+
+# Changelog - 14/09/2023
+- Episodes are now opened through a set path which is defined in environmental variables
 
 # Methodology
 
@@ -47,7 +49,7 @@ The random episode is then opened by the preferred video player.
 
 ```python
 def openEpisode(self):
-    pathToOpen = parPath + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
+    pathToOpen = self.dirPath + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
     os.startfile(pathToOpen)
 ```
 
