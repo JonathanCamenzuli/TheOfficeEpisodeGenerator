@@ -25,9 +25,11 @@ import time
 import threading
 import itertools
 import pathlib
+import sqlite3
 
 # Dependencies
 import imdb
+from dotenv import load_dotenv
 
 asciiTitlePath = "./images/ascii_title.txt"
 
@@ -139,6 +141,10 @@ class fileDir():
     """Class which contains functions related to file operations
     """
 
+    def __init__(self):
+        load_dotenv()
+        self.dir_path = os.getenv("THE_OFFICE_ROOT_PATH")
+
     def gotoParentDir(self):
         """Changes cwd to parent directory
 
@@ -156,7 +162,7 @@ class fileDir():
         """Opens the episode in the specified path,
            with the help of `sStr` and `epStr`
         """
-        pathToOpen = parPath + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
+        pathToOpen = self.dir_path + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
         os.startfile(pathToOpen)
 
     def revertDir(self):
@@ -199,7 +205,7 @@ if __name__ == "__main__":
             sStr = selEp[:3]
             epStr = selEp[3:6]
 
-            parPath = fileDir.gotoParentDir()
+            # parPath = fileDir.gotoParentDir()
             sStr, epStr = episodeList.modifyEpString(sStr, epStr)
             fileDir.openEpisode()
 
@@ -210,5 +216,5 @@ if __name__ == "__main__":
         else:
             pass
 
-        if vidsPresent == True:
-            fileDir.revertDir()
+        # if vidsPresent == True:
+        #     fileDir.revertDir()
