@@ -15,10 +15,11 @@ python3 -m pip install cinemagoer
 
 # Environmental Variables
 
+- `EPISODES_AVAILABLE`: Used for indicating whether episodes are available to be opened. `"True"`/`"False"` used.
 - `THE_OFFICE_ROOT_PATH`: The absolute path for the root directory which includes the episodes. In Windows, this is included as `"C:\\...\\EpisodesFolder"`. In *nix, this is included as `"/home/.../EpisodesFolder"`.
 
 # Changelog - 14/09/2023
-- Episodes are now opened through a set path which is defined in environmental variables
+- Added an environmental variable used for indicating the presence of episodes
 
 # Methodology
 

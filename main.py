@@ -142,7 +142,6 @@ class fileDir():
     """
 
     def __init__(self):
-        load_dotenv()
         self.dirPath = os.getenv("THE_OFFICE_ROOT_PATH")
 
     def gotoParentDir(self):
@@ -173,16 +172,13 @@ class fileDir():
 
 if __name__ == "__main__":
 
+    load_dotenv()
+
     asciiArt = asciiArt()
     episodeList = episodeList()
     fileDir = fileDir()
 
-    vidsPresentStr = input("Are episodes present in your file system? (Y/N): ")
-
-    if vidsPresentStr == "Y" or vidsPresentStr == "y":
-        vidsPresent = True
-    else:
-        vidsPresent = False
+    vidsPresent = (os.getenv("EPISODES_AVAILABLE") == "True")
 
     while (True):
 
