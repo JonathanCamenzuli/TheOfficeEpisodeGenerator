@@ -1,59 +1,59 @@
 <img src="/assets/TheOfficeEpisodeGeneratorLogo.png" alt="The Office Episode Generator Logo">
 
-A Python-based program that generates and opens a random episode from The Office (U.S).
+A Python-based program that generates and opens a random episode from The Office (U.S). Episode information is obtained from the TMDB API and stored in an SQLite database.
 
 # Requirements and Dependencies
 
-This program makes use of the following package:
+This program makes use of the following packages:
 
-- [Cinemagoer](https://github.com/cinemagoer/cinemagoer) (formerly known as *IMDbPY*)
+- [requests](https://github.com/psf/requests)
+- [python-dotenv](https://github.com/theskumar/python-dotenv)
 
+The packages can be collectively installed by making use of the included `requirements.txt` file.
 
 ```
-python3 -m pip install cinemagoer
+python3 -m pip install -r requirements.txt
 ```
 
 # Environmental Variables
-
+- `TMDB_API_KEY`: The API Read Access Token from TMDB. This can be obtained [here](https://www.themoviedb.org/settings/api)
 - `EPISODES_AVAILABLE`: Used for indicating whether episodes are available to be opened. `"True"`/`"False"` used.
 - `THE_OFFICE_ROOT_PATH`: The absolute path for the root directory which includes the episodes. In Windows, this is included as `"C:\\...\\EpisodesFolder"`. In *nix, this is included as `"/home/.../EpisodesFolder"`.
 
-# Changelog - 14/09/2023
-- Added an environmental variable used for indicating the presence of episodes
+# Changelog - 15/09/2023
+- Depreciated the use of the Cinemagoer package
+- Replaced the Cinemagoer package with the TMDB API
+- Episodes are now stored and accessed in an SQLite database
 
 # Methodology
 
-An instance from the Cinemagoer class is created. The `movieID` for *The Office (U.S)* is then used to load all the episodes of the series from IMDb. All the episodes are placed into a text file. Furthermore, after that text file is created, that text file will be used to display a random line which in this case displays the episode in said line.
+Episode data is obtained for each season from the TMDB API. Each episode is stored inserted into a newly created SQLite database. The following episode information is stored:
+- Season Number
+- Episode Number
+- Episode Name
+- Episode Overview
+
+After the creation of the database, a random episode is picked by making use of a query. The information from the selected row is displayed and used for opening the episode (if `EPISODES_AVAILABLE` is enabled)
 
 ```python
-def getEpList(self):
-    imdbInstance = imdb.IMDb()
-    imdbCode = "0386676"
+for season in range(1, 10):
+            url = f"https://api.themoviedb.org/3/tv/2316/season/{season}?language=en-US"
+            headers = {
+                "accept": "application/json",
+                "Authorization": f"Bearer {os.getenv('TMDB_API_KEY')}"
+            }
 
-    series = imdbInstance.get_movie(imdbCode)
-    imdbInstance.update(series, 'episodes')
-    episodes = series.data['episodes']
-    with open("episode_list.txt", "w") as f:
-        for i in episodes.keys():
-            for j in episodes[i]:
-                title = episodes[i][j]['title']
-                if j < 10:
-                    epNum = "E0" + str(j)
-                else:
-                    epNum = "E" + str(j)
-                f.write("S0" + str(i) + epNum + " : " + title + "\n")
+            response = requests.get(url, headers=headers)
+            fullEpisodeList = response.json()['episodes']
+
+            for episode in range(len(fullEpisodeList)):
+                specificEpisode = fullEpisodeList[episode]
+                cursor.execute('''INSERT INTO episodes (season, episode, episodeName, episodeBrief) VALUES (?, ?, ?, ?)''', (
+                    season, specificEpisode['episode_number'], specificEpisode['name'], specificEpisode['overview']))
 ```
 
-<img src="/assets/loadingDisplaying.gif" alt="Program Functioning">
-
-The random episode is then opened by the preferred video player.
-
-```python
-def openEpisode(self):
-    pathToOpen = self.dirPath + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
-    os.startfile(pathToOpen)
-```
+[//]: # (<img src="/assets/loadingDisplaying.gif" alt="Program Functioning">)
 
 # Disclaimers
 - This project is distributed under terms of the GNU General Public License v2.0. For more information, please look at the license file found in `./LICENSE`
-- I am not affiliated with either NBC, The Office, IMDb or any other motion picture or television corporation, parent or affiliate corporation. All motion pictures, products and brands mentioned and featured in this program and repository are the respective trademarks and copyrights of their owners.
+- I am not affiliated with either NBC, The Office or any other motion picture or television corporation, parent or affiliate corporation. All motion pictures, products and brands mentioned and featured in this program and repository are the respective trademarks and copyrights of their owners.
