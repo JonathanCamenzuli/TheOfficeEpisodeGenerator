@@ -1,4 +1,4 @@
-<img src="/gitImages/TheOfficeEpisodeGeneratorLogo.png" alt="The Office Episode Generator Logo">
+<img src="/assets/TheOfficeEpisodeGeneratorLogo.png" alt="The Office Episode Generator Logo">
 
 A Python-based program that generates and opens a random episode from The Office (U.S).
 
@@ -44,7 +44,7 @@ def getEpList(self):
                 f.write("S0" + str(i) + epNum + " : " + title + "\n")
 ```
 
-<img src="/gitImages/loadingDisplaying.gif" alt="Program Functioning">
+<img src="/assets/loadingDisplaying.gif" alt="Program Functioning">
 
 The random episode is then opened by the preferred video player.
 

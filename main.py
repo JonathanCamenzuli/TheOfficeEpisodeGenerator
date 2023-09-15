@@ -18,7 +18,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 """
 
-import random
 import os
 import sys
 import time
@@ -28,7 +27,7 @@ import pathlib
 import sqlite3
 
 # Dependencies
-import imdb
+import requests
 from dotenv import load_dotenv
 
 asciiTitlePath = "./assets/ascii_title.txt"
@@ -65,25 +64,28 @@ class episodeList():
        available.
     """
 
-    def getEpList(self):
+    def getEpList(self, conn, cursor):
         """Obtains the episode list from IMDB into a text file
            named `episode_list.txt`
         """
-        imdbInstance = imdb.IMDb()
-        imdbCode = "0386676"
 
-        series = imdbInstance.get_movie(imdbCode)
-        imdbInstance.update(series, 'episodes')
-        episodes = series.data['episodes']
-        with open("episode_list.txt", "w") as f:
-            for i in episodes.keys():
-                for j in episodes[i]:
-                    title = episodes[i][j]['title']
-                    if j < 10:
-                        epNum = "E0" + str(j)
-                    else:
-                        epNum = "E" + str(j)
-                    f.write("S0" + str(i) + epNum + " : " + title + "\n")
+        for season in range(1, 10):
+            url = f"https://api.themoviedb.org/3/tv/2316/season/{season}?language=en-US"
+            headers = {
+                "accept": "application/json",
+                "Authorization": f"Bearer {os.getenv('TMDB_API_KEY')}"
+            }
+
+            response = requests.get(url, headers=headers)
+            fullEpisodeList = response.json()['episodes']
+
+            for episode in range(len(fullEpisodeList)):
+                specificEpisode = fullEpisodeList[episode]
+                cursor.execute('''INSERT INTO episodes (season, episode, episodeName, episodeBrief) VALUES (?, ?, ?, ?)''', (
+                    season, specificEpisode['episode_number'], specificEpisode['name'], specificEpisode['overview']))
+
+        conn.commit()
+        conn.close()
 
     def createEpList(self, done):
         """Method that indicates that the episode list is getting
@@ -91,10 +93,17 @@ class episodeList():
         """
         loadingProcess = threading.Thread(target=asciiArt.loadingRod)
         loadingProcess.start()
-        self.getEpList()
+        f = open("episodes.db", "w")
+
+        conn = sqlite3.connect('episodes.db')
+        cursor = conn.cursor()
+        cursor.execute(
+            """CREATE TABLE episodes (id INTEGER PRIMARY KEY, season INTEGER, episode INTEGER, episodeName TEXT, episodeBrief TEXT)""")
+
+        self.getEpList(conn, cursor)
         time.sleep(10)
         done = True
-        print("\n\nEpisodes list successfully created!\n\n")
+        print("\n\nFull episode database successfully created!\n\n")
 
     def loadEpList(self):
         """Opens `episode_list.txt` and selects a random line
@@ -104,70 +113,59 @@ class episodeList():
             String: `selEp` is the string contains the
             episode selected
         """
-        file = open("episode_list.txt")
-        episodes = file.readlines()
-        randEpisode = random.randint(0, 187)
-        selEp = episodes[randEpisode]
-        print(episodes[randEpisode])
-        return selEp
 
-    def modifyEpString(self, sStr, epStr):
+        conn = sqlite3.connect('episodes.db')
+        cursor = conn.cursor()
+
+        # Retrieve a random episode from the database
+        cursor.execute('SELECT * FROM episodes ORDER BY RANDOM() LIMIT 1')
+        episode = cursor.fetchone()
+
+        if episode:
+            pk, season, episodeNo, episodeName, episodeBrief = episode
+            return season, episodeNo, episodeName, episodeBrief
+        else:
+            print("No episodes found in the database.")
+            return None
+
+    def modifyEpString(self, seasonStr, episodeStr):
         """Checks if there is an extended/two-part episode for
            the selected episode
 
         Args:
-            sStr (String): is the string which corresponds to a
+            seasonStr (String): is the string which corresponds to a
             particular season
-            epStr (String): is the string which corresponds to a
+            episodeStr (String): is the string which corresponds to a
             particular episode
 
         Returns:
             Strings: Modified `sStr` and `epStr` (if applicable)
         """
-        if (sStr == "S06"):
-            if (epStr == "E13"):
+        if (seasonStr == "S06"):
+            if (episodeStr == "E13"):
                 # Prompt the user if extended version
                 # of episode should be played
                 inputStr = input(
                     "Do you want to open an extended version of S06E13? (Y/N): ")
                 if inputStr == 'Y' or inputStr == 'y':
-                    epStr = epStr + " - EXTENDED"
+                    episodeStr = episodeStr + " - EXTENDED"
                 else:
                     pass
-        return sStr, epStr
+        return seasonStr, episodeStr
 
 
-class fileDir():
-    """Class which contains functions related to file operations
+def openEpisode(season, episode):
+    """Opens the episode in the specified path,
+        with the help of `season` and `episode`
     """
 
-    def __init__(self):
-        self.dirPath = os.getenv("THE_OFFICE_ROOT_PATH")
+    dirPath = os.getenv("THE_OFFICE_ROOT_PATH")
 
-    def gotoParentDir(self):
-        """Changes cwd to parent directory
-
-        Returns:
-            String: The new cwd, in this case,
-            the parent dir of original directory
-        """
-        currPath = os.path.dirname(os.getcwd())
-        os.chdir(currPath)
-        parPath = os.getcwd()
-
-        return parPath
-
-    def openEpisode(self):
-        """Opens the episode in the specified path,
-           with the help of `sStr` and `epStr`
-        """
-        pathToOpen = self.dirPath + "\\" + sStr + "\\" + sStr + epStr + ".mp4"
-        os.startfile(pathToOpen)
-
-    def revertDir(self):
-        """Revert cwd to original dir of script
-        """
-        os.chdir(parPath + "\\TheOfficeEpisodeGenerator\\")
+    if os.name == 'nt':
+        pathToOpen = dirPath + "\\" + season + "\\" + season + episode + ".mp4"
+    else:
+        pathToOpen = dirPath + "/" + season + "/" + season + episode + ".mp4"
+    os.startfile(pathToOpen)
 
 
 if __name__ == "__main__":
@@ -176,7 +174,6 @@ if __name__ == "__main__":
 
     asciiArt = asciiArt()
     episodeList = episodeList()
-    fileDir = fileDir()
 
     vidsPresent = (os.getenv("EPISODES_AVAILABLE") == "True")
 
@@ -186,23 +183,28 @@ if __name__ == "__main__":
         os.system('cls' if os.name == 'nt' else 'clear')
         asciiArt.getASCII()
 
-        # Check if file exists
-        filePath = pathlib.PurePath("episode_list.txt")
+        # Check if database exists
+        filePath = pathlib.PurePath("episodes.db")
+
         if pathlib.Path(filePath).is_file():
             pass
         else:
             done = False
             episodeList.createEpList(done)
 
-        selEp = episodeList.loadEpList()
+        season, episodeNo, episodeName, episodeBrief = episodeList.loadEpList()
 
         if vidsPresent == True:
             # Parse string and episode number from line
-            sStr = selEp[:3]
-            epStr = selEp[3:6]
+            seasonStr = f"S0{season}"
+            episodeStr = f"E0{episodeNo}" if episodeNo < 10 else f"E{episodeNo}"
 
-            sStr, epStr = episodeList.modifyEpString(sStr, epStr)
-            fileDir.openEpisode()
+            seasonStr, episodeStr = episodeList.modifyEpString(
+                seasonStr, episodeStr)
+            openEpisode(seasonStr, episodeStr)
+
+        print(seasonStr + episodeStr + ": " + episodeName + "\n")
+        print(episodeBrief + "\n")
 
         print("-> Enter any key to restart\n-> Enter 'Q' to Quit\n")
         inputStr = input("Enter an input: ")
