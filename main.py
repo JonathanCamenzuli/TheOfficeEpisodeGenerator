@@ -45,28 +45,26 @@ class asciiArt():
             asciiTitleContents = f.read()
             print(asciiTitleContents + "\n")
 
-    def loadingRod(self):
-        """Prints the loading animation. Usef while obtaining the
-           episode list from IMDB
+    def loadingRod(self, done_event):
+        """Prints the loading animation. Used while obtaining the
+           episode list
         """
         for load in itertools.cycle([".  ", ".. ", "...", " ..", "  .", "   "]):
-            if done:
+            if done_event.is_set():
                 break
             sys.stdout.write(
-                "\r Episodes list not found - Obtaining Episodes List from IMDb  " + load)
+                "\r Episodes list not found - Obtaining Episodes List  " + load)
             sys.stdout.flush()
             time.sleep(.1)
 
 
 class episodeList():
     """Class concerned with anything that has to do with the
-       episode list which is found `./episode_list.txt`, if
-       available.
+       episode list
     """
 
     def getEpList(self, conn, cursor):
-        """Obtains the episode list from IMDB into a text file
-           named `episode_list.txt`
+        """Obtains the episode list and inserts it into the database
         """
 
         for season in range(1, 10):
@@ -91,7 +89,9 @@ class episodeList():
         """Method that indicates that the episode list is getting
            generated in the CLI
         """
-        loadingProcess = threading.Thread(target=asciiArt.loadingRod)
+
+        done_event = threading.Event()  # Create an event object
+        loadingProcess = threading.Thread(target=asciiArt.loadingRod, args=(done_event,))
         loadingProcess.start()
         f = open("episodes.db", "w")
 
@@ -101,13 +101,13 @@ class episodeList():
             """CREATE TABLE episodes (id INTEGER PRIMARY KEY, season INTEGER, episode INTEGER, episodeName TEXT, episodeBrief TEXT)""")
 
         self.getEpList(conn, cursor)
-        time.sleep(10)
-        done = True
+        done_event.set()
+        loadingProcess.join()
         print("\n\nFull episode database successfully created!\n\n")
 
     def loadEpList(self):
-        """Opens `episode_list.txt` and selects a random line
-           from the text file
+        """Opens the episode list and selects a random line from the
+        text file
 
         Returns:
             String: `selEp` is the string contains the
