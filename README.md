@@ -1,32 +1,23 @@
 <img src="/assets/TheOfficeEpisodeGeneratorLogo.png" alt="The Office Episode Generator Logo">
 
+\
+![Python](https://img.shields.io/badge/Python-3670A0?style=flat&logo=python&logoColor=ffdd54)
+![TMDB](https://img.shields.io/badge/TMDB%20API-0d253f?style=flat&logo=themoviedatabase&logoColor=%230d253f&logoSize=auto&logoHeight=75&logoWidth=25&labelColor=%23ffffff)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat&logo=sqlite&logoColor=white)
+
 A Python-based program that generates and opens a random episode from The Office (U.S). Episode information is obtained from the TMDB API and stored in an SQLite database.
 
-# Requirements and Dependencies
+# Setup
+The [PowerShell script](set_up_env.ps1) has been added to automate the setup of a virtual environment, and add creation of an alias in PowerShell in order to easily call the script.
 
-This program makes use of the following packages:
-
-- [requests](https://github.com/psf/requests)
-- [python-dotenv](https://github.com/theskumar/python-dotenv)
-
-The packages can be collectively installed by making use of the included `requirements.txt` file.
-
-```
-python3 -m pip install -r requirements.txt
-```
-
-# Environmental Variables
-- `TMDB_API_KEY`: The API Read Access Token from TMDB. This can be obtained [here](https://www.themoviedb.org/settings/api)
+That being said, the follow environment variables are required for the proper functioning of the program:
+- `TMDB_API_KEY`: The API Read Access Token from TMDB. This can be obtained [here](https://www.themoviedb.org/settings/api). Kindly note that an account with TMDB is required for said Token.
 - `EPISODES_AVAILABLE`: Used for indicating whether episodes are available to be opened. `"True"`/`"False"` used.
 - `THE_OFFICE_ROOT_PATH`: The absolute path for the root directory which includes the episodes. In Windows, this is included as `"C:\\...\\EpisodesFolder"`. In *nix, this is included as `"/home/.../EpisodesFolder"`.
 
-# Changelog - 15/09/2023
-- Depreciated the use of the Cinemagoer package
-- Replaced the Cinemagoer package with the TMDB API
-- Episodes are now stored and accessed in an SQLite database
+Once the script is executed for the first time, it attempts to obtain the episode list from TMDB as highlighted [below](#methodology).
 
 # Methodology
-
 Episode data is obtained for each season from the TMDB API. Each episode is stored inserted into a newly created SQLite database. The following episode information is stored:
 - Season Number
 - Episode Number
@@ -55,5 +46,6 @@ for season in range(1, 10):
 [//]: # (<img src="/assets/loadingDisplaying.gif" alt="Program Functioning">)
 
 # Disclaimers
-- This project is distributed under terms of the GNU General Public License v2.0. For more information, please look at the license file found in `./LICENSE`
-- I am not affiliated with either NBC, The Office or any other motion picture or television corporation, parent or affiliate corporation. All motion pictures, products and brands mentioned and featured in this program and repository are the respective trademarks and copyrights of their owners.
+- This project is licensed under the terms specified in the [`LICENSE`](/LICENSE) file
+- This project uses the TMDB API but is not endorsed or certified by TMDB
+- I am not affiliated with NBC, *The Office*, or any other motion picture, television corporation, or their parent or affiliate companies. All motion pictures, products, and brands mentioned and featured in this program and repository are the respective trademarks and copyrights of their respective owners.
